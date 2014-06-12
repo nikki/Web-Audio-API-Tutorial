@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="bower_components/seiyria-bootstrap-slider/css/bootstrap-slider.css">
     <link rel="stylesheet" href="bower_components/prism/themes/prism.css">
     <style>
-      h2 { margin: 40px 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #333 }
+      h2, h3 { margin: 40px 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #333 }
       pre { margin-bottom: 20px !important }
       button { margin-bottom: 10px !important }
       .strike { text-decoration : line-through }
@@ -21,9 +21,27 @@
         <h1>Web Audio API for HTML5 Games</h1>
         <p>This code accompanies the tutorial [link].</p>
 
+
+<!-- Test for API support -->
+<div>
+<h2>Test for API support</h2>
+<pre><code class="language-javascript">var context, sound, sounds, format, examples;
+
+try {
+  // create an AudioContext
+  context = new AudioContext();
+} catch(e) {
+  // API not supported
+  throw new Error('Web Audio API not supported.');
+}
+</code></pre>
+</div>
+
+
 <!-- Load a sound -->
-        <h2>Load a sound</h2>
-        <pre><code class="language-javascript">function loadSound(url, callback) {
+<div>
+<h2>Load a sound</h2>
+<pre><code class="language-javascript">function loadSound(url) {
   var request = new XMLHttpRequest();
   request.open('GET', url, true);
   request.responseType = 'arraybuffer';
@@ -32,9 +50,8 @@
     // request.response is encoded... so decode it now
     context.decodeAudioData(request.response, function(buffer) {
       sound = buffer;
-      callback && callback(); // demo specific fn, not required
-    }, function() {
-      onError('Error loading ' + url);
+    }, function(err) {
+      throw new Error(err);
     });
   }
 
@@ -42,73 +59,121 @@
 }
 // loadSound('audio/BaseUnderAttack.mp3');
 </code></pre>
+<button class="btn btn-success" data-button="example-loadOne">
+  <span class="glyphicon glyphicon-download"></span>
+  Load sci-fi sound
+</button>
+</div>
 
-        <button class="btn btn-success" data-button="example-loadOne">
-          <span class="glyphicon glyphicon-download"></span>
-          Load sci-fi sound
-        </button>
+
+<!-- Testing file format support -->
+<div>
+<h3>Testing file format support</h3>
+<pre><code class="language-javascript">var format = '.' + (new Audio().canPlayType('audio/ogg') !== '' ? 'ogg' : 'mp3');
+// loadSound('audio/baseUnderAttack' + format);
+</code></pre>
+</div>
+
 
 <!-- Play a sound -->
-        <h2>Play a sound</h2>
-        <button class="btn btn-primary" data-button="example-playOne">
-          <span class="glyphicon glyphicon-play"></span>
-          Play sci-fi sound
-        </button>
+<div>
+<h2>Play a sound</h2>
+<pre><code class="language-javascript">function playSound(buffer) {
+  var source = context.createBufferSource();
+  source.buffer = buffer;
+  source.connect(context.destination);
+  source.noteOn(0);
+}
+// playSound(sound);
+</code></pre>
+<button class="btn btn-success" data-button="example-loadOne">
+  <span class="glyphicon glyphicon-download"></span>
+  Load sci-fi sound
+</button>
+<button class="btn btn-primary" data-button="example-playOne">
+  <span class="glyphicon glyphicon-play"></span>
+  Play sci-fi sound
+</button>
+</div>
+
 
 <!-- Load multiple sounds -->
-        <h2>Load multiple sounds</h2>
+<div>
+<h2>Load multiple sounds</h2>
+<pre><code class="language-javascript">
 
-        <button class="btn btn-success" data-button="example-loadMultiple">
-          <span class="glyphicon glyphicon-download"></span>
-          Load laser, coin and explosion sounds
-        </button><br />
-        <button class="btn btn-primary" data-button="example-playLaser">
-          <span class="glyphicon glyphicon-play"></span>
-          Play laser sound
-        </button>
-        <button class="btn btn-primary" data-button="example-playCoin">
-          <span class="glyphicon glyphicon-play"></span>
-          Play coin sound
-        </button>
-        <button class="btn btn-primary" data-button="example-playExplosion">
-          <span class="glyphicon glyphicon-play"></span>
-          Play explosion sound
-        </button>
+</code></pre>
+<button class="btn btn-success" data-button="example-loadMultiple">
+  <span class="glyphicon glyphicon-download"></span>
+  Load laser, coin and explosion sounds
+</button><br />
+<button class="btn btn-primary" data-button="example-playLaser">
+  <span class="glyphicon glyphicon-play"></span>
+  Play laser sound
+</button>
+<button class="btn btn-primary" data-button="example-playCoin">
+  <span class="glyphicon glyphicon-play"></span>
+  Play coin sound
+</button>
+<button class="btn btn-primary" data-button="example-playExplosion">
+  <span class="glyphicon glyphicon-play"></span>
+  Play explosion sound
+</button>
+</div>
+
 
 <!-- Adjusting the volume -->
-        <h2>Adjusting the volume</h2>
-        <div>
-          <input type="text" data-slider="example-volumeSlider" data-slider-min="0" data-slider-max="3" data-slider-step="0.1" data-slider-value="1" />
-          <button class="btn btn-primary" data-button="example-playLaser">
-            <span class="glyphicon glyphicon-play"></span>
-            Play laser sound @ 1.00 gain
-          </button>
-        </div>
+<div>
+<h2>Adjusting the volume</h2>
+<pre><code class="language-javascript">
 
-
+</code></pre>
+<div>
+  <input type="text" data-slider="example-volumeSlider" data-slider-min="0" data-slider-max="3" data-slider-step="0.1" data-slider-value="1" />
+  <button class="btn btn-primary" data-button="example-playLaser">
+    <span class="glyphicon glyphicon-play"></span>
+    Play laser sound @ 1.00 gain
+  </button>
+</div>
+</div>
 
 
 <!-- Muting a sound -->
-        <h2>Muting a sound</h2>
-        <button class="btn btn-success" data-button="example-playNyan">
-          <span class="glyphicon glyphicon-play"></span>
-          Play <span class="strike">annoying</span> awesome music
-        </button>
-        <button class="btn btn-primary" data-button="example-muteNyan">
-          <span class="glyphicon glyphicon-volume-off"></span>
-          Mute <span class="strike">annoying</span> awesome music
-        </button>
+<div>
+<h2>Muting a sound</h2>
+<pre><code class="language-javascript">
+
+</code></pre>
+<button class="btn btn-primary" data-button="example-playNyan">
+  <span class="glyphicon glyphicon-play"></span>
+  Play <span class="strike">annoying</span> awesome music
+</button>
+<button class="btn btn-success" data-button="example-muteNyan">
+  <span class="glyphicon glyphicon-volume-off"></span>
+  Mute <span class="strike">annoying</span> awesome music
+</button>
+</div>
 
 
 <!-- Looping sounds -->
-        <h2>Looping sounds</h2>
+<div>
+<h2>Looping sounds</h2>
+<pre><code class="language-javascript">
+
+</code></pre>
+</div>
+
 
 <!-- Crossfading sounds -->
-        <h2>Crossfading sounds</h2>
+<div>
+<h2>Crossfading sounds</h2>
+<pre><code class="language-javascript">
+
+</code></pre>
+</div>
+
 
       </div>
-
-
       <div class="col-md-3">
         Menu
       </div>

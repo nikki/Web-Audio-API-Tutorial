@@ -10,7 +10,7 @@
     context = new AudioContext();
   } catch(e) {
     // API not supported
-    onError('Web Audio API not supported.');
+    onError.call($('.container'), 'Web Audio API not supported.');
   }
 
 
@@ -31,7 +31,7 @@
         sound = buffer;
         callback && callback();
       }, function() {
-        onError('Error loading ' + src);
+        onError.call($('.container'), 'Error loading ' + src);
       });
     }
 
@@ -206,13 +206,44 @@
    * Demo Utilities
    */
 
+  // !!! needs more abstraction
+
   function onError(msg) {
-    // $('.alert-error').clone().after('h1');
-    console.log(msg);
+    // clone error alert
+    var $alert = $('.alert-danger:last').clone().removeClass('hidden');
+
+    // insert new error message
+    $alert.find('.message').text(msg);
+
+    // find parent
+    var $parent = this.parent();
+
+    // remove existing alerts
+    $parent.children('.alert').each(function() {
+      $(this).alert('close');
+    });
+
+    // insert alert message after pre
+    $parent.children('pre').after($alert);
   }
 
   function onSuccess(msg) {
-    console.log(msg);
+    // clone success alert
+    var $alert = $('.alert-success:last').clone().removeClass('hidden');
+
+    // insert new success message
+    $alert.find('.message').text(msg);
+
+    // find parent
+    var $parent = this.parent();
+
+    // remove existing alerts
+    $parent.children('.alert').each(function() {
+      $(this).alert('close');
+    });
+
+    // insert alert message after pre
+    $parent.children('pre').after($alert);
   }
 
 
@@ -241,16 +272,18 @@
       var $this = this;
 
       loadSound('audio/baseUnderAttack' + format, function() {
-        onSuccess('Sci-Fi RTS sound loaded successfully.');
-        $this.attr('disabled', 'disabled');
+        onSuccess.call($this, 'Sci-Fi RTS sound loaded successfully.');
+        $('button[data-button="example-loadOne"]').attr('disabled', 'disabled');
       });
     },
 
     playOne : function() {
+      var $this = this;
+
       try {
         playSound(sound);
       } catch(e) {
-        onError('You must load a sound before you can play it!');
+        onError.call($this, 'You must load a sound before you can play it!');
       }
     },
 
@@ -258,21 +291,39 @@
       var $this = this;
 
       loadSounds(sounds, function() {
-        onSuccess('Multiple sounds loaded successfully.');
+        onSuccess.call($this, 'Multiple sounds loaded successfully.');
         $this.attr('disabled', 'disabled');
       });
     },
 
     playLaser : function() {
-      playSound(sounds.laser.buffer);
+      var $this = this;
+
+      try {
+        playSound(sounds.laser.buffer);
+      } catch(e) {
+        onError.call($this, 'You must load a sound before you can play it!');
+      }
     },
 
     playCoin : function() {
-      playSound(sounds.coin.buffer);
+      var $this = this;
+
+      try {
+        playSound(sounds.coin.buffer);
+      } catch(e) {
+        onError.call($this, 'You must load a sound before you can play it!');
+      }
     },
 
     playExplosion : function() {
-      playSound(sounds.explosion.buffer);
+      var $this = this;
+
+      try {
+        playSound(sounds.explosion.buffer);
+      } catch(e) {
+        onError.call($this, 'You must load a sound before you can play it!');
+      }
     },
 
     playLouder : function() {
