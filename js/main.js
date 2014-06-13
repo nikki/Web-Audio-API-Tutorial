@@ -1,5 +1,5 @@
 (function() {
-  var context, sound, sounds, format, examples;
+  var context, sound, sounds, loops, format, examples;
 
   /**
    * Test for API support
@@ -156,7 +156,7 @@
 
 
   /**
-   * Example 4b: Modify the playSoundObj function to accept additional sound properties
+   * Example 4b: Modify the playSoundObj function to accept a volume property
    */
 
   function playSoundObj(obj, callback) {
@@ -195,6 +195,54 @@
   /**
    * Example 6: Looping sounds
    */
+
+  loops = {
+    laser : {
+      src : 'audio/laser',
+      volume : 2,
+      loop: true
+    },
+    coin : {
+      src : 'audio/coin',
+      volume : 1.5,
+      loop: true
+    },
+    explosion : {
+      src : 'audio/explosion',
+      volume : 0.5,
+      loop: true
+    }
+  };
+
+
+  /**
+   * Example 6: Modify the playSoundObj function again to accept a loop property
+   */
+
+  function playSoundObj(obj, callback) {
+    var source = context.createBufferSource(), gain;
+    source.buffer = obj.buffer;
+
+    // create a gain node
+    gain = context.createGainNode();
+
+    // connect the source to the gain node
+    source.connect(gain);
+
+    // set the gain (volume)
+    source.gain.value = obj.volume;
+
+    // loop the audio?
+    source.loop = obj.loop;
+
+    // connect source to destination
+    source.connect(context.destination);
+
+    // play sound
+    source.noteOn(0);
+    callback && callback();
+  }
+  // playSound(sound);
 
 
   /**
@@ -259,7 +307,7 @@
 
       loadSound('audio/baseUnderAttack' + format, function() {
         onSuccess.call($this, 'Sci-Fi RTS sound loaded successfully.');
-        $('button[data-button="example-loadOne"]').attr('disabled', 'disabled');
+        $('button[data-button="example-loadOne"]').remove();
       });
     },
 
@@ -280,7 +328,7 @@
 
       loadSounds(sounds, function() {
         onSuccess.call($this, 'Multiple sounds loaded successfully.');
-        $this.attr('disabled', 'disabled');
+        $('button[data-button="example-loadMultiple"]').remove();
       });
     },
 
@@ -321,6 +369,33 @@
 
     muteNyan : function() {
       muteSoundObj(nyan);
+    },
+
+    playLooped : function() {
+      var $this = this,
+          obj = loops[$this.data('sound')];
+
+      // sound is loaded?
+      if (obj.buffer) {
+        if (!obj.played) {
+          try {
+            playSoundObj(obj, function() {
+              obj.played = true;
+            });
+          } catch(e) {}
+        } else {
+          // played once, mute it?
+          obj.buffer.gain = 1;
+        }
+      } else {
+        onError.call($this, 'First load the sounds using the button below.');
+      }
+    },
+
+    muteAllLooped : function() {
+      $.each(loops, function(sound) {
+        loops[sound].buffer.gain = 0;
+      });
     }
   };
 
@@ -337,9 +412,12 @@
   });
   $sliders.slider().on('slide', examples.setVolume);
 
-  // load sounds on init
+  // load sounds on page load
   var nyan = { src : 'audio/nyan', volume : 1 };
   loadSoundObj(nyan);
+
+  // load loops example sounds on page load
+  loadSounds(loops);
 
 
   /**

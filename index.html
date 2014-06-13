@@ -9,12 +9,13 @@
     <link rel="stylesheet" href="bower_components/prism/plugins/line-highlight/prism-line-highlight.css">
     <style>
       h2, h3 { margin: 40px 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #333 }
-      pre { margin-bottom: 20px !important }
+      pre { margin-bottom: 20px !important; font-size: 1em; line-height: 1em }
       button { margin-bottom: 10px !important }
       .strike { text-decoration : line-through }
       .slider { margin-right: 20px; width: 289px !important; height: 34px !important; margin-bottom: 10px }
       .tooltip { top: -25px !important }
-      .line-highlight { margin-top: 0 }
+      pre[data-line] { padding: 1em 0 1em 2em }
+      .line-highlight:before, .line-highlight[data-end]:after { top: 0.1em }
     </style>
 </head>
 <body>
@@ -45,7 +46,7 @@ try {
 <!-- Load a sound -->
 <div>
 <h2>Load a sound</h2>
-<pre><code class="language-javascript">var sound;
+<pre data-line="16"><code class="language-javascript">var sound;
 
 /**
  * Example 1: Load a sound
@@ -116,7 +117,7 @@ function playSound(buffer) {
 <!-- Load multiple sounds -->
 <div>
 <h2>Load multiple sounds</h2>
-<pre><code class="language-javascript">var sounds = {
+<pre data-line="21,27,49"><code class="language-javascript">var sounds = {
   laser : {
     src : 'audio/laser'
   },
@@ -192,7 +193,7 @@ function loadSounds(obj) {
 <!-- Adjusting the volume -->
 <div>
 <h2>Adjusting the volume</h2>
-<pre><code class="language-javascript">sounds = {
+<pre data-line="25-32"><code class="language-javascript">sounds = {
   laser : {
     src : 'audio/laser',
     volume : 2
@@ -209,7 +210,7 @@ function loadSounds(obj) {
 
 
 /**
- * Example 4: Modify the playSoundObj function to accept additional sound properties
+ * Example 4: Modify the playSoundObj function to accept volume property
  */
 
 function playSoundObj(obj) {
@@ -231,6 +232,7 @@ function playSoundObj(obj) {
   // play sound
   source.noteOn(0);
 }
+// loadSounds(sounds);
 </code></pre>
 <button class="btn btn-success" data-button="example-loadMultiple">
   <span class="glyphicon glyphicon-download"></span>
@@ -290,9 +292,69 @@ function muteSoundObj(obj) {
 <!-- Looping sounds -->
 <div>
 <h2>Looping sounds</h2>
-<pre><code class="language-javascript">
+<pre data-line="35"><code class="language-javascript">sounds = {
+  laser : {
+    src : 'audio/laser',
+    volume : 1,
+    loop: true
+  },
+  coin : {
+    src : 'audio/coin',
+    volume : 1,
+    loop: true
+  },
+  explosion : {
+    src : 'audio/explosion',
+    volume : 1,
+    loop: true
+  }
+};
 
+
+/**
+ * Example 6: Modify the playSoundObj function again to accept a loop property
+ */
+
+function playSoundObj(obj) {
+  var source = context.createBufferSource(), gain;
+  source.buffer = obj.buffer;
+
+  // create a gain node
+  gain = context.createGainNode();
+
+  // connect the source to the gain node
+  source.connect(gain);
+
+  // loop the audio?
+  source.loop = !!obj.loop;
+
+  // set the gain (volume)
+  source.gain.value = obj.volume;
+
+  // connect source to destination
+  source.connect(context.destination);
+
+  // play sound
+  source.noteOn(0);
+}
+// loadSounds(sounds);
 </code></pre>
+<button class="btn btn-primary" data-button="example-playLooped" data-sound="laser">
+  <span class="glyphicon glyphicon-play"></span>
+  Play looped laser sound
+</button>
+<button class="btn btn-primary" data-button="example-playLooped" data-sound="coin">
+  <span class="glyphicon glyphicon-play"></span>
+  Play looped coin sound
+</button>
+<button class="btn btn-primary" data-button="example-playLooped" data-sound="explosion">
+  <span class="glyphicon glyphicon-play"></span>
+  Play looped explosion sound
+</button>
+<button class="btn btn-success" data-button="example-muteAllLooped">
+  <span class="glyphicon glyphicon-volume-off"></span>
+  Mute all looped sounds
+</button>
 </div>
 
 
