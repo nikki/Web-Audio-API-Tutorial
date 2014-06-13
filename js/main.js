@@ -190,7 +190,7 @@
 
   /**
    * Example 5: Muting a sound
-   * @param  {object} obj Object containing a loaded sound buffer
+   * @param  {object} obj Object containing a loaded sound buffer.
    */
 
   function muteSoundObj(obj) {
@@ -272,8 +272,8 @@
 
   /**
    * Example 7a: Crossfading between two sounds
-   * @param  {Object} a Sound object to fade out
-   * @param  {Object} b Sound object to fade in
+   * @param  {Object} a Sound object to fade out.
+   * @param  {Object} b Sound object to fade in.
    */
 
   function crossFadeSounds(a, b) {
