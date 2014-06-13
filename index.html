@@ -6,12 +6,15 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/seiyria-bootstrap-slider/css/bootstrap-slider.css">
     <link rel="stylesheet" href="bower_components/prism/themes/prism.css">
+    <link rel="stylesheet" href="bower_components/prism/plugins/line-highlight/prism-line-highlight.css">
     <style>
       h2, h3 { margin: 40px 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #333 }
       pre { margin-bottom: 20px !important }
       button { margin-bottom: 10px !important }
       .strike { text-decoration : line-through }
-      .slider { margin-right: 20px }
+      .slider { margin-right: 20px; width: 289px !important; height: 34px !important; margin-bottom: 10px }
+      .tooltip { top: -25px !important }
+      .line-highlight { margin-top: 0 }
     </style>
 </head>
 <body>
@@ -203,7 +206,36 @@ function loadSounds(obj) {
     volume : 0.5
   }
 };
+
+
+/**
+ * Example 4: Modify the playSoundObj function to accept additional sound properties
+ */
+
+function playSoundObj(obj) {
+  var source = context.createBufferSource(), gain;
+  source.buffer = obj.buffer;
+
+  // create a gain node
+  gain = context.createGainNode();
+
+  // connect the source to the gain node
+  source.connect(gain);
+
+  // set the gain (volume)
+  source.gain.value = obj.volume;
+
+  // connect source to destination
+  source.connect(context.destination);
+
+  // play sound
+  source.noteOn(0);
+}
 </code></pre>
+<button class="btn btn-success" data-button="example-loadMultiple">
+  <span class="glyphicon glyphicon-download"></span>
+  Load laser, coin and explosion sounds
+</button><br />
 <input type="text" class="slider" data-sound="laser" data-slider-min="0" data-slider-max="5" data-slider-step="0.1" />
 <button class="btn btn-primary" data-button="example-playObject" data-sound="laser">
   <span class="glyphicon glyphicon-play"></span>
@@ -227,8 +259,22 @@ function loadSounds(obj) {
 <!-- Muting a sound -->
 <div>
 <h2>Muting a sound</h2>
-<pre><code class="language-javascript">
+<pre><code class="language-javascript">var nyan = {
+  src : 'audio/nyan',
+  volume : 1
+};
+loadSoundObj(nyan);
 
+
+/**
+ * Example 5: Muting a sound
+ * @param  {object} obj Object containing a loaded sound buffer
+ */
+
+function muteSoundObj(obj) {
+  obj.buffer.gain = 0;
+}
+// muteSoundObj(nyan);
 </code></pre>
 <button class="btn btn-primary" data-button="example-playNyan">
   <span class="glyphicon glyphicon-play"></span>
@@ -284,6 +330,7 @@ function loadSounds(obj) {
   <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
   <script src="bower_components/seiyria-bootstrap-slider/js/bootstrap-slider.js"></script>
   <script src="bower_components/prism/prism.js"></script>
+  <script src="bower_components/prism/plugins/line-highlight/prism-line-highlight.min.js"></script>
   <script src="js/main.js"></script>
 
 </body>

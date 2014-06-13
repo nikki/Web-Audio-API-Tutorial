@@ -169,8 +169,6 @@
     // connect the source to the gain node
     source.connect(gain);
 
-console.log(obj.volume);
-
     // set the gain (volume)
     source.gain.value = obj.volume;
 
@@ -186,9 +184,10 @@ console.log(obj.volume);
 
   /**
    * Example 5: Muting a sound
+   * @param  {object} obj Object containing a loaded sound buffer
    */
 
-  function muteSoundObj(obj, callback) {
+  function muteSoundObj(obj) {
     obj.buffer.gain = 0;
   }
 
@@ -306,23 +305,23 @@ console.log(obj.volume);
           playSoundObj(obj);
         } catch(e) {}
       } else {
-        onError.call($this, 'First load the sounds using the button in the example above.');
+        onError.call($this, 'First load the sounds using the button below.');
       }
-    }
-
-
-/*
-    playLouder : function() {
-      playSoundObj(sounds.explosion);
     },
 
     playNyan : function() {
+      // play the sound once
       playSoundObj(nyan);
+
+      // redefine the function to change the volume
+      examples.playNyan = function() {
+        nyan.buffer.gain = 1;
+      };
     },
 
     muteNyan : function() {
       muteSoundObj(nyan);
-    }*/
+    }
   };
 
 
@@ -339,7 +338,7 @@ console.log(obj.volume);
   $sliders.slider().on('slide', examples.setVolume);
 
   // load sounds on init
-  var nyan = { src : 'audio/nyan' };
+  var nyan = { src : 'audio/nyan', volume : 1 };
   loadSoundObj(nyan);
 
 
