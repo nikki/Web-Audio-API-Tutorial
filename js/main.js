@@ -268,13 +268,14 @@
     var currentTime = context.currentTime,
         fadeTime = 3; // 3 seconds fade time
 
+
     // fade out
-    a.gainNode.gain.value.linearRampToValueAtTime(1, currentTime);
-    a.gainNode.gain.value.linearRampToValueAtTime(0, currentTime + fadeTime);
+    a.gainNode.gain.linearRampToValueAtTime(1, currentTime);
+    a.gainNode.gain.linearRampToValueAtTime(0, currentTime + fadeTime);
 
     // fade in
-    b.gainNode.gain.value.linearRampToValueAtTime(0, currentTime);
-    b.gainNode.gain.value.linearRampToValueAtTime(1, currentTime + fadeTime);
+    b.gainNode.gain.linearRampToValueAtTime(0, currentTime);
+    b.gainNode.gain.linearRampToValueAtTime(1, currentTime + fadeTime);
   }
 
 
@@ -283,6 +284,8 @@
   /**
    * Demo Utilities
    */
+
+  // !!! TODO: wait until audio is _actually loaded_ before displaying messages
 
   function message(type, msg) {
     var $alert = $('.alert-' + (type === 'error' ? 'danger' : 'success') + ':last').clone().removeClass('hidden'), // clone alert
@@ -314,6 +317,19 @@
    */
 
   examples = {
+    testApi : function() {
+      var $this = this;
+
+      if (typeof context === 'object') {
+        message.call($this, 'success', 'The Web Audio API is supported in this browser. Yay :)');
+      } else {
+        message.call($this, 'error', 'The Web Audio API not supported in this browser. Boo :(');
+      }
+
+      // remove button
+      $this.remove();
+    },
+
     loadOne : function() {
       var $this = this;
 
@@ -429,20 +445,33 @@
       // play both tracks
       try {
         playSoundObj(crossfade.battle);
-        playSoundObj(crossfade.eclipse);
+        playSoundObj(crossfade.eclipse, function() {
+          $this.text('Crossfade tracks');
+        });
       } catch(e) {
         message.call($this, 'error', 'You must load a sound before you can play it!');
       }
 
       // redefine fn
       examples.crossFadeMusic = function() {
-        crossFadeSounds(crossfade.battle, crossfade.eclipse);
+        if (crossfade.battle.gainNode.gain.value) {
+          crossFadeSounds(crossfade.battle, crossfade.eclipse);
+        } else {
+          crossFadeSounds(crossfade.eclipse, crossfade.battle);
+        }
       }
     },
 
     muteMusic : function() {
       $.each(crossfade, function(sound) {
-        crossfade[sound].gainNode.gain.value = 0;
+        console.log(crossfade[sound].gainNode);
+        if (crossfade[sound].gainNode) {
+          // cancel existing schedules
+          crossfade[sound].gainNode.gain.cancelScheduledValues(context.currentTime);
+
+          // shush!
+          crossfade[sound].gainNode.gain.setValueAtTime(0, context.currentTime);
+        }
       });
     }
   };
