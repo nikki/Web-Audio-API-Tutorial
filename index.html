@@ -11,9 +11,9 @@
       .wrapper { width: 970px; padding: 20px }
       .col-md-9 { width: 728px !important }
       .col-md-3 { width: 242px !important; position: fixed; left: 738px; top: 41px }
-      .col-md-3 ul { list-style-type: none; margin: 0; padding: 0 }
-      .col-md-3 ul li { margin-bottom: 5px }
       h2, h3 { margin: 40px 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #333 }
+      ul { list-style-type: none; margin: 0; padding: 0 }
+      ul li { margin-bottom: 5px }
       pre { margin-bottom: 20px !important; font-size: 1em; line-height: 1em }
       button { margin-bottom: 10px !important }
       .strike { text-decoration : line-through }
@@ -198,7 +198,7 @@ function loadSounds(obj) {
 <!-- Adjusting the volume -->
 <div>
 <h2><a id="ex-4">Adjusting the volume</a></h2>
-<pre data-line="25-32"><code class="language-javascript">sounds = {
+<pre data-line="25-35"><code class="language-javascript">sounds = {
   laser : {
     src : 'audio/laser',
     volume : 2
@@ -219,20 +219,20 @@ function loadSounds(obj) {
  */
 
 function playSoundObj(obj) {
-  var source = context.createBufferSource(), gain;
+  var source = context.createBufferSource();
   source.buffer = obj.buffer;
 
   // create a gain node
-  gain = context.createGainNode();
+  obj.gainNode = context.createGainNode();
 
   // connect the source to the gain node
-  source.connect(gain);
+  source.connect(obj.gainNode);
 
   // set the gain (volume)
-  source.gain.value = obj.volume;
+  obj.gainNode.gain.value = obj.volume;
 
-  // connect source to destination
-  source.connect(context.destination);
+  // connect gain node to destination
+  obj.gainNode.connect(context.destination);
 
   // play sound
   source.noteOn(0);
@@ -279,7 +279,7 @@ loadSoundObj(nyan);
  */
 
 function muteSoundObj(obj) {
-  obj.buffer.gain = 0;
+  obj.gainNode.gain.value = 0;
 }
 // muteSoundObj(nyan);
 </code></pre>
@@ -297,7 +297,7 @@ function muteSoundObj(obj) {
 <!-- Looping sounds -->
 <div>
 <h2><a id="ex-6">Looping sounds</a></h2>
-<pre data-line="38"><code class="language-javascript">sounds = {
+<pre data-line="29"><code class="language-javascript">sounds = {
   laser : {
     src : 'audio/laser',
     volume : 1,
@@ -321,29 +321,33 @@ function muteSoundObj(obj) {
  */
 
 function playSoundObj(obj) {
-  var source = context.createBufferSource(), gain;
+  var source = context.createBufferSource();
   source.buffer = obj.buffer;
 
+  // loop the audio?
+  source.loop = obj.loop;
+
   // create a gain node
-  gain = context.createGainNode();
+  obj.gainNode = context.createGainNode();
 
   // connect the source to the gain node
-  source.connect(gain);
+  source.connect(obj.gainNode);
 
   // set the gain (volume)
-  source.gain.value = obj.volume;
+  obj.gainNode.gain.value = obj.volume;
 
-  // loop the audio?
-  source.loop = !!obj.loop;
-
-  // connect source to destination
-  source.connect(context.destination);
+  // connect gain node to destination
+  obj.gainNode.connect(context.destination);
 
   // play sound
   source.noteOn(0);
 }
 // loadSounds(sounds);
 </code></pre>
+<button class="btn btn-success" data-button="example-loadMultiple">
+  <span class="glyphicon glyphicon-download"></span>
+  Load laser, coin and explosion sounds
+</button><br />
 <button class="btn btn-primary" data-button="example-playLooped" data-sound="laser">
   <span class="glyphicon glyphicon-play"></span>
   Play looped laser sound
@@ -370,16 +374,45 @@ function playSoundObj(obj) {
 
 </code></pre>
 
+<button class="btn btn-success" data-button="example-loadMusic">
+  <span class="glyphicon glyphicon-download"></span>
+  Load 2x music tracks (~3Mb)
+</button>
 
-
-
-
+<button class="btn btn-primary" data-button="example-crossFadeMusic">
+  <span class="glyphicon glyphicon-play"></span>
+  Play track 1
+</button>
 <button class="btn btn-success" data-button="example-muteMusic">
   <span class="glyphicon glyphicon-volume-off"></span>
   Mute both tracks
 </button>
-
 </div>
+
+      <!-- Audio resources -->
+      <div>
+        <h3>Audio Resources</h3>
+        <p>Many thanks to <a href="http://opengameart.org/" target="_blank">OpenGameArt.Org</a> and it's contributors.</p>
+        <ul>
+          <li>
+            <a href="http://opengameart.org/content/scifi-rts-status-vocals" target="_blank">SciFi RTS Status Vocals</a>
+          </li>
+          <li>
+            <a href="http://opengameart.org/content/laser-fire" target="_blank">Laser Fire</a>
+          </li>
+          <li>
+            <a href="http://opengameart.org/content/8-bit-platformer-sfx" target="_blank">8-bit platformer SFX</a>
+          </li>
+          <li>
+            <a href="http://opengameart.org/content/rpg-battle-theme-the-last-encounter-0" target="_blank">RPG Battle Theme - The Last Encounter</a>
+          </li>
+          <li>
+            <a href="http://opengameart.org/content/fast-high-music" target="_blank">Fast, high music</a>
+          </li>
+        </ul>
+      </div>
+
+
 
       <!-- Fixed menu -->
       </div>
@@ -416,6 +449,7 @@ function playSoundObj(obj) {
       </div>
     </div>
   </div>
+
 
 
   <div class="alert alert-success alert-dismissable hidden">

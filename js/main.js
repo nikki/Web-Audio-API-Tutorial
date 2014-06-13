@@ -1,5 +1,5 @@
 (function() {
-  var context, sound, sounds, loops, format, examples,
+  var context, format, sound, sounds, loops, crossfade, examples,
       $wrapper = $('.wrapper');
 
 
@@ -162,20 +162,20 @@
    */
 
   function playSoundObj(obj, callback) {
-    var source = context.createBufferSource(), gain;
+    var source = context.createBufferSource();
     source.buffer = obj.buffer;
 
     // create a gain node
-    gain = context.createGainNode();
+    obj.gainNode = context.createGainNode();
 
     // connect the source to the gain node
-    source.connect(gain);
+    source.connect(obj.gainNode);
 
     // set the gain (volume)
-    source.gain.value = obj.volume;
+    obj.gainNode.gain.value = obj.volume;
 
-    // connect source to destination
-    source.connect(context.destination);
+    // connect gain node to destination
+    obj.gainNode.connect(context.destination);
 
     // play sound
     source.noteOn(0);
@@ -190,7 +190,7 @@
    */
 
   function muteSoundObj(obj) {
-    obj.buffer.gain = 0;
+    obj.gainNode.gain.value = 0;
   }
 
 
@@ -222,23 +222,23 @@
    */
 
   function playSoundObj(obj, callback) {
-    var source = context.createBufferSource(), gain;
+    var source = context.createBufferSource();
     source.buffer = obj.buffer;
-
-    // create a gain node
-    gain = context.createGainNode();
-
-    // connect the source to the gain node
-    source.connect(gain);
-
-    // set the gain (volume)
-    source.gain.value = obj.volume;
 
     // loop the audio?
     source.loop = obj.loop;
 
-    // connect source to destination
-    source.connect(context.destination);
+    // create a gain node
+    obj.gainNode = context.createGainNode();
+
+    // connect the source to the gain node
+    source.connect(obj.gainNode);
+
+    // set the gain (volume)
+    obj.gainNode.gain.value = obj.volume;
+
+    // connect gain node to destination
+    obj.gainNode.connect(context.destination);
 
     // play sound
     source.noteOn(0);
@@ -251,10 +251,31 @@
    * Example 7: Crossfading sounds
    */
 
+  crossfade = {
+    battle : {
+      src : 'audio/the-last-encounter',
+      volume : 1,
+      loop : true
+    },
+    eclipse : {
+      src : 'audio/red-eclipse',
+      volume : 0,
+      loop : true
+    }
+  };
 
+  function crossFadeSounds(a, b) {
+    var currentTime = context.currentTime,
+        fadeTime = 3; // 3 seconds fade time
 
+    // fade out
+    a.gainNode.gain.value.linearRampToValueAtTime(1, currentTime);
+    a.gainNode.gain.value.linearRampToValueAtTime(0, currentTime + fadeTime);
 
-
+    // fade in
+    b.gainNode.gain.value.linearRampToValueAtTime(0, currentTime);
+    b.gainNode.gain.value.linearRampToValueAtTime(1, currentTime + fadeTime);
+  }
 
 
 /* ---------------------------------------------------------------- */
@@ -317,10 +338,14 @@
     loadMultiple : function() {
       var $this = this;
 
+      // load single play sounds
       loadSounds(sounds, function() {
         message.call($this, 'success', 'Multiple sounds loaded successfully.');
         $('button[data-button="example-loadMultiple"]').remove();
       });
+
+      // load looped sounds
+      loadSounds(loops);
     },
 
     setVolume : function(value) {
@@ -354,7 +379,7 @@
 
       // redefine the function to change the volume
       examples.playNyan = function() {
-        nyan.buffer.gain = 1;
+        nyan.gainNode.gain.value = 1;
       };
     },
 
@@ -376,7 +401,7 @@
           } catch(e) {}
         } else {
           // played once, mute it?
-          obj.buffer.gain = 1;
+          obj.gainNode.gain.value = 1;
         }
       } else {
         message.call($this, 'error', 'First load the sounds using the button below.');
@@ -385,7 +410,39 @@
 
     muteAllLooped : function() {
       $.each(loops, function(sound) {
-        loops[sound].buffer.gain = 0;
+        if (loops[sound].gainNode) loops[sound].gainNode.gain.value = 0;
+      });
+    },
+
+    loadMusic : function() {
+      var $this = this;
+
+      loadSounds(crossfade, function() {
+        message.call($this, 'success', 'Music tracks loaded successfully.');
+        $this.remove();
+      });
+    },
+
+    crossFadeMusic : function() {
+      var $this = this;
+
+      // play both tracks
+      try {
+        playSoundObj(crossfade.battle);
+        playSoundObj(crossfade.eclipse);
+      } catch(e) {
+        message.call($this, 'error', 'You must load a sound before you can play it!');
+      }
+
+      // redefine fn
+      examples.crossFadeMusic = function() {
+        crossFadeSounds(crossfade.battle, crossfade.eclipse);
+      }
+    },
+
+    muteMusic : function() {
+      $.each(crossfade, function(sound) {
+        crossfade[sound].gainNode.gain.value = 0;
       });
     }
   };
@@ -404,11 +461,8 @@
   $sliders.slider().on('slide', examples.setVolume);
 
   // load sounds on page load
-  var nyan = { src : 'audio/nyan', volume : 1 };
+  var nyan = { src : 'audio/nyan', volume : 1, loop : true };
   loadSoundObj(nyan);
-
-  // load loops example sounds on page load
-  loadSounds(loops);
 
 
   /**
