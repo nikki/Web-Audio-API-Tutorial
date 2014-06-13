@@ -292,7 +292,7 @@ function muteSoundObj(obj) {
 <!-- Looping sounds -->
 <div>
 <h2>Looping sounds</h2>
-<pre data-line="35"><code class="language-javascript">sounds = {
+<pre data-line="38"><code class="language-javascript">sounds = {
   laser : {
     src : 'audio/laser',
     volume : 1,
@@ -325,11 +325,11 @@ function playSoundObj(obj) {
   // connect the source to the gain node
   source.connect(gain);
 
-  // loop the audio?
-  source.loop = !!obj.loop;
-
   // set the gain (volume)
   source.gain.value = obj.volume;
+
+  // loop the audio?
+  source.loop = !!obj.loop;
 
   // connect source to destination
   source.connect(context.destination);
