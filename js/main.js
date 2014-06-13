@@ -457,7 +457,7 @@
       try {
         playSoundObj(crossfade.battle);
         playSoundObj(crossfade.eclipse, function() {
-          $this.text('Crossfade tracks');
+          $this.html('<span class="glyphicon glyphicon-refresh"></span> Crossfade tracks');
         });
       } catch(e) {
         message.call($this, 'error', 'You must load a sound before you can play it!');
