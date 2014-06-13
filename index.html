@@ -8,7 +8,11 @@
     <link rel="stylesheet" href="bower_components/prism/themes/prism.css">
     <link rel="stylesheet" href="bower_components/prism/plugins/line-highlight/prism-line-highlight.css">
     <style>
-      .col-md-3 { position: fixed }
+      .wrapper { width: 970px; padding: 20px }
+      .col-md-9 { width: 728px !important }
+      .col-md-3 { width: 242px !important; position: fixed; left: 738px; top: 41px }
+      .col-md-3 ul { list-style-type: none; margin: 0; padding: 0 }
+      .col-md-3 ul li { margin-bottom: 5px }
       h2, h3 { margin: 40px 0 20px 0; padding-bottom: 10px; border-bottom: 2px solid #333 }
       pre { margin-bottom: 20px !important; font-size: 1em; line-height: 1em }
       button { margin-bottom: 10px !important }
@@ -21,7 +25,7 @@
 </head>
 <body>
 
-  <div class="container">
+  <div class="wrapper">
     <div class="row">
       <div class="col-md-9">
         <h1>Web Audio API for HTML5 Games</h1>
@@ -30,7 +34,7 @@
 
 <!-- Test for API support -->
 <div>
-<h2>Test for API support</h2>
+<h2><a id="ex-0">Test for API support</a></h2>
 <pre><code class="language-javascript">var context;
 
 try {
@@ -46,7 +50,7 @@ try {
 
 <!-- Load a sound -->
 <div>
-<h2>Load a sound</h2>
+<h2><a id="ex-1a">Load a sound</a></h2>
 <pre data-line="16"><code class="language-javascript">var sound;
 
 /**
@@ -81,7 +85,7 @@ function loadSound(url) {
 
 <!-- Testing file format support -->
 <div>
-<h2>Testing file format support</h2>
+<h2><a id="ex-1b">Testing file format support</a></h2>
 <pre><code class="language-javascript">var format = '.' + (new Audio().canPlayType('audio/ogg') !== '' ? 'ogg' : 'mp3');
 // loadSound('audio/baseUnderAttack' + format);
 </code></pre>
@@ -90,7 +94,7 @@ function loadSound(url) {
 
 <!-- Play a sound -->
 <div>
-<h2>Play a sound</h2>
+<h2><a id="ex-2">Play a sound</a></h2>
 <pre><code class="language-javascript">/**
  * Example 2: Play a sound
  * @param  {Object}   buffer   AudioBuffer object - a loaded sound.
@@ -117,7 +121,7 @@ function playSound(buffer) {
 
 <!-- Load multiple sounds -->
 <div>
-<h2>Load multiple sounds</h2>
+<h2><a id="ex-3">Load multiple sounds</a></h2>
 <pre data-line="21,27,49"><code class="language-javascript">var sounds = {
   laser : {
     src : 'audio/laser'
@@ -193,7 +197,7 @@ function loadSounds(obj) {
 
 <!-- Adjusting the volume -->
 <div>
-<h2>Adjusting the volume</h2>
+<h2><a id="ex-4">Adjusting the volume</a></h2>
 <pre data-line="25-32"><code class="language-javascript">sounds = {
   laser : {
     src : 'audio/laser',
@@ -261,7 +265,7 @@ function playSoundObj(obj) {
 
 <!-- Muting a sound -->
 <div>
-<h2>Muting a sound</h2>
+<h2><a id="ex-5">Muting a sound</a></h2>
 <pre><code class="language-javascript">var nyan = {
   src : 'audio/nyan',
   volume : 1
@@ -292,7 +296,7 @@ function muteSoundObj(obj) {
 
 <!-- Looping sounds -->
 <div>
-<h2>Looping sounds</h2>
+<h2><a id="ex-6">Looping sounds</a></h2>
 <pre data-line="38"><code class="language-javascript">sounds = {
   laser : {
     src : 'audio/laser',
@@ -361,7 +365,7 @@ function playSoundObj(obj) {
 
 <!-- Crossfading sounds -->
 <div>
-<h2>Crossfading sounds</h2>
+<h2><a id="ex-7">Crossfading sounds</a></h2>
 <pre><code class="language-javascript">
 
 </code></pre>
@@ -377,10 +381,38 @@ function playSoundObj(obj) {
 
 </div>
 
-
+      <!-- Fixed menu -->
       </div>
       <div class="col-md-3">
-        Menu
+        <ul>
+          <li>
+            <a href="#ex-0">Test for API Support</a>
+          </li>
+          <li>
+            <a href="#ex-1a">Load a sound</a>
+          </li>
+          <li>
+            <a href="#ex-1b">Testing file format support</a>
+          </li>
+          <li>
+            <a href="#ex-2">Play a sound</a>
+          </li>
+          <li>
+            <a href="#ex-3">Load multiple sounds</a>
+          </li>
+          <li>
+            <a href="#ex-4">Adjusting the volume</a>
+          </li>
+          <li>
+            <a href="#ex-5">Muting a sound</a>
+          </li>
+          <li>
+            <a href="#ex-6">Looping sounds</a>
+          </li>
+          <li>
+            <a href="#ex-7">Crossfading sounds</a>
+          </li>
+        </ul>
       </div>
     </div>
   </div>

@@ -1,5 +1,6 @@
 (function() {
-  var context, sound, sounds, loops, format, examples;
+  var context, sound, sounds, loops, format, examples,
+      $wrapper = $('.wrapper');
 
 
   /**
@@ -11,7 +12,7 @@
     context = new AudioContext();
   } catch(e) {
     // API not supported
-    message.call($('.container'), 'error', 'Web Audio API not supported.');
+    message.call($wrapper, 'error', 'Web Audio API not supported.');
   }
 
 
@@ -32,7 +33,7 @@
         sound = buffer;
         callback && callback();
       }, function() {
-        message.call($('.container'), 'error', 'Error loading ' + src);
+        message.call($wrapper, 'error', 'Error loading ' + src);
       });
     }
 
@@ -86,7 +87,7 @@
         obj.buffer = buffer;
         callback && callback();
       }, function() {
-        message.call($('.container'), 'error', 'Error loading ' + obj.src);
+        message.call($wrapper, 'error', 'Error loading ' + obj.src);
       });
     }
 
@@ -270,7 +271,7 @@
     $alert.find('.message').text(msg);
 
     // insert alert in correct place
-    if (this.hasClass('container')) { // global alert
+    if (this.hasClass('wrapper')) { // global alert
       this.children().children().eq(0).prepend($alert);
     } else { // example alert
       // find parent
