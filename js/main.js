@@ -18,8 +18,8 @@
 
   /**
    * Example 1a: Load a sound
-   * @param  {String}   src      Url of the sound to be loaded.
-   * @param  {Function} callback Used in this demo to create success message. Not required.
+   * @param {String} src Url of the sound to be loaded.
+   * @param {Function} callback Used in this demo to create success message. Not required.
    */
 
   function loadSound(src, callback) {
@@ -52,8 +52,8 @@
 
   /**
    * Example 2: Play a sound
-   * @param  {Object}   buffer   AudioBuffer object - a loaded sound.
-   * @param  {Function} callback Used in this demo to create success message. Not required.
+   * @param {Object} buffer AudioBuffer object - a loaded sound.
+   * @param {Function} callback Used in this demo to create success message. Not required.
    */
 
   function playSound(buffer, callback) {
@@ -72,8 +72,8 @@
 
   /**
    * Example 3a: Modify playSound fn to accept changed params
-   * @param  {Object}   obj      Object containing url of sound to be loaded.
-   * @param  {Function} callback Used in this demo to create success message. Not required.
+   * @param {Object} obj Object containing url of sound to be loaded.
+   * @param {Function} callback Used in this demo to create success message. Not required.
    */
 
   function loadSoundObj(obj, callback) {
@@ -115,6 +115,8 @@
 
   /**
    * Example 3c: Create a function to loop through and load all sounds
+   * @param {Object} obj List of sounds to loop through.
+   * @param {Function} callback Used in this demo to create success message. Not required.
    */
 
   function loadSounds(obj, callback) {
@@ -159,6 +161,8 @@
 
   /**
    * Example 4b: Modify the playSoundObj function to accept a volume property
+   * @param {Object} obj Object containing url of sound to be loaded.
+   * @param {Function} callback Used in this demo to create success message. Not required.
    */
 
   function playSoundObj(obj, callback) {
@@ -219,6 +223,8 @@
 
   /**
    * Example 6a: Modify the playSoundObj function again to accept a loop property
+   * @param {Object} obj Object containing url of sound to be loaded.
+   * @param {Function} callback Used in this demo to create success message. Not required.
    */
 
   function playSoundObj(obj, callback) {
@@ -264,10 +270,15 @@
     }
   };
 
+  /**
+   * Example 7a: Crossfading between two sounds
+   * @param  {Object} a Sound object to fade out
+   * @param  {Object} b Sound object to fade in
+   */
+
   function crossFadeSounds(a, b) {
     var currentTime = context.currentTime,
         fadeTime = 3; // 3 seconds fade time
-
 
     // fade out
     a.gainNode.gain.linearRampToValueAtTime(1, currentTime);
@@ -464,7 +475,6 @@
 
     muteMusic : function() {
       $.each(crossfade, function(sound) {
-        console.log(crossfade[sound].gainNode);
         if (crossfade[sound].gainNode) {
           // cancel existing schedules
           crossfade[sound].gainNode.gain.cancelScheduledValues(context.currentTime);

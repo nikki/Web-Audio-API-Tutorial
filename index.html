@@ -59,7 +59,7 @@ try {
 
 /**
  * Example 1: Load a sound
- * @param  {String}   src      Url of the sound to be loaded.
+ * @param {String} src Url of the sound to be loaded.
  */
 
 function loadSound(url) {
@@ -101,7 +101,7 @@ function loadSound(url) {
 <h2><a id="ex-2">Play a sound</a></h2>
 <pre><code class="language-javascript">/**
  * Example 2: Play a sound
- * @param  {Object}   buffer   AudioBuffer object - a loaded sound.
+ * @param {Object} buffer AudioBuffer object - a loaded sound.
  */
 
 function playSound(buffer) {
@@ -141,7 +141,7 @@ function playSound(buffer) {
 
 /**
  * Example 3a: Modify playSound fn to accept changed params
- * @param  {Object}   obj      Object containing url of sound to be loaded.
+ * @param {Object} obj Object containing url of sound to be loaded.
  */
 
 function loadSoundObj(obj) {
@@ -165,6 +165,7 @@ function loadSoundObj(obj) {
 
 /**
  * Example 3b: Function to loop through and load all sounds
+ * @param {Object} obj List of sounds to loop through.
  */
 
 function loadSounds(obj) {
@@ -220,6 +221,7 @@ function loadSounds(obj) {
 
 /**
  * Example 4: Modify the playSoundObj function to accept volume property
+ * @param {Object} obj Object containing url of sound to be loaded.
  */
 
 function playSoundObj(obj) {
@@ -279,7 +281,7 @@ loadSoundObj(nyan);
 
 /**
  * Example 5: Muting a sound
- * @param  {object} obj Object containing a loaded sound buffer
+ * @param  {object} obj Object containing a loaded sound buffer.
  */
 
 function muteSoundObj(obj) {
@@ -322,6 +324,7 @@ function muteSoundObj(obj) {
 
 /**
  * Example 6: Modify the playSoundObj function again to accept a loop property
+ * @param {Object} obj Object containing url of sound to be loaded.
  */
 
 function playSoundObj(obj) {
@@ -374,8 +377,39 @@ function playSoundObj(obj) {
 <!-- Crossfading sounds -->
 <div>
 <h2><a id="ex-7">Crossfading sounds</a></h2>
-<pre><code class="language-javascript">
+<pre><code class="language-javascript">var crossfade = {
+  battle : {
+    src : 'audio/the-last-encounter',
+    volume : 1,
+    loop : true
+  },
+  eclipse : {
+    src : 'audio/red-eclipse',
+    volume : 0,
+    loop : true
+  }
+};
 
+
+/**
+ * Example 7: Crossfading between two sounds
+ * @param  {Object} a Sound object to fade out.
+ * @param  {Object} b Sound object to fade in.
+ */
+
+function crossFadeSounds(a, b) {
+  var currentTime = context.currentTime,
+      fadeTime = 3; // 3 seconds fade time
+
+  // fade out
+  a.gainNode.gain.linearRampToValueAtTime(1, currentTime);
+  a.gainNode.gain.linearRampToValueAtTime(0, currentTime + fadeTime);
+
+  // fade in
+  b.gainNode.gain.linearRampToValueAtTime(0, currentTime);
+  b.gainNode.gain.linearRampToValueAtTime(1, currentTime + fadeTime);
+}
+// crossFadeSounds(crossfade.battle, crossfade.eclipse);
 </code></pre>
 
 <button class="btn btn-success" data-button="example-loadMusic">
