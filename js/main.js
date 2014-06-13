@@ -1,6 +1,7 @@
 (function() {
   var context, sound, sounds, loops, format, examples;
 
+
   /**
    * Test for API support
    */
@@ -10,7 +11,7 @@
     context = new AudioContext();
   } catch(e) {
     // API not supported
-    onError.call($('.container'), 'Web Audio API not supported.');
+    message.call($('.container'), 'error', 'Web Audio API not supported.');
   }
 
 
@@ -31,7 +32,7 @@
         sound = buffer;
         callback && callback();
       }, function() {
-        onError.call($('.container'), 'Error loading ' + src);
+        message.call($('.container'), 'error', 'Error loading ' + src);
       });
     }
 
@@ -85,7 +86,7 @@
         obj.buffer = buffer;
         callback && callback();
       }, function() {
-        onError('Error loading ' + obj.src);
+        message.call($('.container'), 'error', 'Error loading ' + obj.src);
       });
     }
 
@@ -216,7 +217,7 @@
 
 
   /**
-   * Example 6: Modify the playSoundObj function again to accept a loop property
+   * Example 6a: Modify the playSoundObj function again to accept a loop property
    */
 
   function playSoundObj(obj, callback) {
@@ -250,50 +251,39 @@
    */
 
 
+
+
+
+
+
 /* ---------------------------------------------------------------- */
 
   /**
    * Demo Utilities
    */
 
-  // !!! needs more abstraction
+  function message(type, msg) {
+    var $alert = $('.alert-' + (type === 'error' ? 'danger' : 'success') + ':last').clone().removeClass('hidden'), // clone alert
+        $parent;
 
-  function onError(msg) {
-    // clone error alert
-    var $alert = $('.alert-danger:last').clone().removeClass('hidden');
-
-    // insert new error message
+    // insert new message
     $alert.find('.message').text(msg);
 
-    // find parent
-    var $parent = this.parent();
+    // insert alert in correct place
+    if (this.hasClass('container')) { // global alert
+      this.children().children().eq(0).prepend($alert);
+    } else { // example alert
+      // find parent
+      $parent = this.parent();
 
-    // remove existing alerts
-    $parent.children('.alert').each(function() {
-      $(this).alert('close');
-    });
+      // remove existing alerts
+      $parent.children('.alert').each(function() {
+        $(this).alert('close');
+      });
 
-    // insert alert message after pre
-    $parent.children('pre').after($alert);
-  }
-
-  function onSuccess(msg) {
-    // clone success alert
-    var $alert = $('.alert-success:last').clone().removeClass('hidden');
-
-    // insert new success message
-    $alert.find('.message').text(msg);
-
-    // find parent
-    var $parent = this.parent();
-
-    // remove existing alerts
-    $parent.children('.alert').each(function() {
-      $(this).alert('close');
-    });
-
-    // insert alert message after pre
-    $parent.children('pre').after($alert);
+      // insert alert message after pre
+      $parent.children('pre').after($alert);
+    }
   }
 
 
@@ -306,7 +296,7 @@
       var $this = this;
 
       loadSound('audio/baseUnderAttack' + format, function() {
-        onSuccess.call($this, 'Sci-Fi RTS sound loaded successfully.');
+        message.call($this, 'success', 'Sci-Fi RTS sound loaded successfully.');
         $('button[data-button="example-loadOne"]').remove();
       });
     },
@@ -319,7 +309,7 @@
       try {
         playSound(one);
       } catch(e) {
-        onError.call($this, 'You must load a sound before you can play it!');
+        message.call($this, 'error', 'You must load a sound before you can play it!');
       }
     },
 
@@ -327,7 +317,7 @@
       var $this = this;
 
       loadSounds(sounds, function() {
-        onSuccess.call($this, 'Multiple sounds loaded successfully.');
+        message.call($this, 'success', 'Multiple sounds loaded successfully.');
         $('button[data-button="example-loadMultiple"]').remove();
       });
     },
@@ -353,7 +343,7 @@
           playSoundObj(obj);
         } catch(e) {}
       } else {
-        onError.call($this, 'First load the sounds using the button below.');
+        message.call($this, 'error', 'First load the sounds using the button below.');
       }
     },
 
@@ -388,7 +378,7 @@
           obj.buffer.gain = 1;
         }
       } else {
-        onError.call($this, 'First load the sounds using the button below.');
+        message.call($this, 'error', 'First load the sounds using the button below.');
       }
     },
 
