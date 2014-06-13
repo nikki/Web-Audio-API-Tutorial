@@ -50,7 +50,7 @@
 
   /**
    * Example 2: Play a sound
-   * @param  {[type]}   buffer   [description]
+   * @param  {Object}   buffer   AudioBuffer object - a loaded sound.
    * @param  {Function} callback Used in this demo to create success message. Not required.
    */
 
@@ -142,17 +142,18 @@
   sounds = {
     laser : {
       src : 'audio/laser',
-      volume : 1
+      volume : 2
     },
     coin : {
       src : 'audio/coin',
-      volume : 1
+      volume : 1.5
     },
     explosion : {
       src : 'audio/explosion',
-      volume : 1
+      volume : 0.5
     }
   };
+
 
   /**
    * Example 4b: Modify the playSoundObj function to accept additional sound properties
@@ -168,8 +169,10 @@
     // connect the source to the gain node
     source.connect(gain);
 
+console.log(obj.volume);
+
     // set the gain (volume)
-    source.gain.value = obj.volume || 1;
+    source.gain.value = obj.volume;
 
     // connect source to destination
     source.connect(context.destination);
@@ -248,22 +251,6 @@
 
 
   /**
-   * Demo Dependencies
-   */
-
-  // init sliders
-  var $sliders = $('input').slider({
-    formater : function(value) {
-      return value.toFixed(2);
-    }
-  });
-
-  // load sounds on init
-  var nyan = { src : 'audio/nyan' };
-  loadSoundObj(nyan);
-
-
-  /**
    * Create demo behaviours
    */
 
@@ -277,11 +264,13 @@
       });
     },
 
-    playOne : function() {
-      var $this = this;
+    playBuffer : function() {
+      var $this = this,
+          name = $this.data('sound'),
+          one = (name === 'scifi' ? sound : sounds[name].buffer);
 
       try {
-        playSound(sound);
+        playSound(one);
       } catch(e) {
         onError.call($this, 'You must load a sound before you can play it!');
       }
@@ -296,36 +285,33 @@
       });
     },
 
-    playLaser : function() {
-      var $this = this;
+    setVolume : function(value) {
+      var $this = $(this);
+          value = (typeof value === 'number' ? value : +value.value.toFixed(1));
 
-      try {
-        playSound(sounds.laser.buffer);
-      } catch(e) {
-        onError.call($this, 'You must load a sound before you can play it!');
-      }
+      // set new sound value
+      sounds[$this.data('sound')].volume = value;
+
+      // show slider value on button
+      $this.parent().next().find('b').text(value);
     },
 
-    playCoin : function() {
-      var $this = this;
+    playObject : function() {
+      var $this = this,
+          obj = sounds[$this.data('sound')];
 
-      try {
-        playSound(sounds.coin.buffer);
-      } catch(e) {
-        onError.call($this, 'You must load a sound before you can play it!');
+      // sound is loaded?
+      if (obj.buffer) {
+        try {
+          playSoundObj(obj);
+        } catch(e) {}
+      } else {
+        onError.call($this, 'First load the sounds using the button in the example above.');
       }
-    },
+    }
 
-    playExplosion : function() {
-      var $this = this;
 
-      try {
-        playSound(sounds.explosion.buffer);
-      } catch(e) {
-        onError.call($this, 'You must load a sound before you can play it!');
-      }
-    },
-
+/*
     playLouder : function() {
       playSoundObj(sounds.explosion);
     },
@@ -336,17 +322,41 @@
 
     muteNyan : function() {
       muteSoundObj(nyan);
-    }
+    }*/
   };
 
 
   /**
-   * Bind demo behaviours to buttons and sliders
+   * Set up demo UI elements
+   */
+
+  // init sliders
+  var $sliders = $('.slider').slider({
+    formater : function(value) {
+      return value.toFixed(1);
+    }
+  });
+  $sliders.slider().on('slide', examples.setVolume);
+
+  // load sounds on init
+  var nyan = { src : 'audio/nyan' };
+  loadSoundObj(nyan);
+
+
+  /**
+   * Bind demo behaviours to UI elements
    */
 
   $(document).on('click', 'button', function(e) {
     var $this = $(this);
     if ($this.data('button')) examples[$this.data('button').split('-')[1]].call($this);
+  });
+
+  $(window).on('load', function(e) {
+    $sliders.each(function() {
+      var $this = $(this);
+      $this.slider('setValue', sounds[$this.data('sound')].volume);
+    })
   });
 
 

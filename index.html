@@ -11,6 +11,7 @@
       pre { margin-bottom: 20px !important }
       button { margin-bottom: 10px !important }
       .strike { text-decoration : line-through }
+      .slider { margin-right: 20px }
     </style>
 </head>
 <body>
@@ -25,7 +26,7 @@
 <!-- Test for API support -->
 <div>
 <h2>Test for API support</h2>
-<pre><code class="language-javascript">var context, sound, sounds, format, examples;
+<pre><code class="language-javascript">var context;
 
 try {
   // create an AudioContext
@@ -41,7 +42,14 @@ try {
 <!-- Load a sound -->
 <div>
 <h2>Load a sound</h2>
-<pre><code class="language-javascript">function loadSound(url) {
+<pre><code class="language-javascript">var sound;
+
+/**
+ * Example 1: Load a sound
+ * @param  {String}   src      Url of the sound to be loaded.
+ */
+
+function loadSound(url) {
   var request = new XMLHttpRequest();
   request.open('GET', url, true);
   request.responseType = 'arraybuffer';
@@ -78,7 +86,12 @@ try {
 <!-- Play a sound -->
 <div>
 <h2>Play a sound</h2>
-<pre><code class="language-javascript">function playSound(buffer) {
+<pre><code class="language-javascript">/**
+ * Example 2: Play a sound
+ * @param  {Object}   buffer   AudioBuffer object - a loaded sound.
+ */
+
+function playSound(buffer) {
   var source = context.createBufferSource();
   source.buffer = buffer;
   source.connect(context.destination);
@@ -90,7 +103,7 @@ try {
   <span class="glyphicon glyphicon-download"></span>
   Load sci-fi sound
 </button>
-<button class="btn btn-primary" data-button="example-playOne">
+<button class="btn btn-primary" data-button="example-playBuffer" data-sound="scifi">
   <span class="glyphicon glyphicon-play"></span>
   Play sci-fi sound
 </button>
@@ -100,22 +113,73 @@ try {
 <!-- Load multiple sounds -->
 <div>
 <h2>Load multiple sounds</h2>
-<pre><code class="language-javascript">
+<pre><code class="language-javascript">var sounds = {
+  laser : {
+    src : 'audio/laser'
+  },
+  coin : {
+    src : 'audio/coin'
+  },
+  explosion : {
+    src : 'audio/explosion'
+  }
+};
 
+
+/**
+ * Example 3a: Modify playSound fn to accept changed params
+ * @param  {Object}   obj      Object containing url of sound to be loaded.
+ */
+
+function loadSoundObj(obj) {
+  var request = new XMLHttpRequest();
+  request.open('GET', obj.src + format, true);
+  request.responseType = 'arraybuffer';
+
+  request.onload = function() {
+    // request.response is encoded... so decode it now
+    context.decodeAudioData(request.response, function(buffer) {
+      obj.buffer = buffer;
+    }, function(err) {
+      throw new Error(err);
+    });
+  }
+
+  request.send();
+}
+// loadSoundObj({ src : 'audio/baseUnderAttack' });
+
+
+/**
+ * Example 3b: Function to loop through and load all sounds
+ */
+
+function loadSounds(obj) {
+  var len = obj.length, i;
+
+  // iterate over sounds obj
+  for (i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      // load sound
+      loadSoundObj(obj[i]);
+    }
+  }
+}
+// loadSounds(sounds);
 </code></pre>
 <button class="btn btn-success" data-button="example-loadMultiple">
   <span class="glyphicon glyphicon-download"></span>
   Load laser, coin and explosion sounds
 </button><br />
-<button class="btn btn-primary" data-button="example-playLaser">
+<button class="btn btn-primary" data-button="example-playBuffer" data-sound="laser">
   <span class="glyphicon glyphicon-play"></span>
   Play laser sound
 </button>
-<button class="btn btn-primary" data-button="example-playCoin">
+<button class="btn btn-primary" data-button="example-playBuffer" data-sound="coin">
   <span class="glyphicon glyphicon-play"></span>
   Play coin sound
 </button>
-<button class="btn btn-primary" data-button="example-playExplosion">
+<button class="btn btn-primary" data-button="example-playBuffer" data-sound="explosion">
   <span class="glyphicon glyphicon-play"></span>
   Play explosion sound
 </button>
@@ -125,16 +189,38 @@ try {
 <!-- Adjusting the volume -->
 <div>
 <h2>Adjusting the volume</h2>
-<pre><code class="language-javascript">
-
+<pre><code class="language-javascript">sounds = {
+  laser : {
+    src : 'audio/laser',
+    volume : 2
+  },
+  coin : {
+    src : 'audio/coin',
+    volume : 1.5
+  },
+  explosion : {
+    src : 'audio/explosion',
+    volume : 0.5
+  }
+};
 </code></pre>
-<div>
-  <input type="text" data-slider="example-volumeSlider" data-slider-min="0" data-slider-max="3" data-slider-step="0.1" data-slider-value="1" />
-  <button class="btn btn-primary" data-button="example-playLaser">
-    <span class="glyphicon glyphicon-play"></span>
-    Play laser sound @ 1.00 gain
-  </button>
-</div>
+<input type="text" class="slider" data-sound="laser" data-slider-min="0" data-slider-max="5" data-slider-step="0.1" />
+<button class="btn btn-primary" data-button="example-playObject" data-sound="laser">
+  <span class="glyphicon glyphicon-play"></span>
+  Play laser sound @ <b>1.00</b> gain
+</button><br />
+
+<input type="text" class="slider" data-sound="coin" data-slider-min="0" data-slider-max="5" data-slider-step="0.1" />
+<button class="btn btn-primary" data-button="example-playObject" data-sound="coin">
+  <span class="glyphicon glyphicon-play"></span>
+  Play coin sound @ <b>1.00</b> gain
+</button><br />
+
+<input type="text" class="slider" data-sound="explosion" data-slider-min="0" data-slider-max="5" data-slider-step="0.1" />
+<button class="btn btn-primary" data-button="example-playObject" data-sound="explosion">
+  <span class="glyphicon glyphicon-play"></span>
+  Play explosion sound @ <b>1.00</b> gain
+</button>
 </div>
 
 
