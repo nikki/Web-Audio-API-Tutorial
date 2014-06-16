@@ -111,7 +111,7 @@ function playSound(buffer) {
   var source = context.createBufferSource();
   source.buffer = buffer;
   source.connect(context.destination);
-  source.noteOn(0);
+  source.start(0);
 }
 // playSound(sound);
 </code></pre>
@@ -244,7 +244,7 @@ function playSoundObj(obj) {
   obj.gainNode.connect(context.destination);
 
   // play sound
-  source.noteOn(0);
+  source.start(0);
 }
 // loadSounds(sounds);
 </code></pre>
@@ -350,7 +350,7 @@ function playSoundObj(obj) {
   obj.gainNode.connect(context.destination);
 
   // play sound
-  source.noteOn(0);
+  source.start(0);
 }
 // loadSounds(sounds);
 </code></pre>

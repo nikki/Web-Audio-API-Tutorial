@@ -63,7 +63,7 @@
     var source = context.createBufferSource();
     source.buffer = buffer;
     source.connect(context.destination);
-    source.noteOn(0);
+    source.start(0);
     callback && callback();
   }
   // playSound(sound);
@@ -182,7 +182,7 @@
     obj.gainNode.connect(context.destination);
 
     // play sound
-    source.noteOn(0);
+    source.start(0);
     callback && callback();
   }
   // playSound(sound);
@@ -247,7 +247,7 @@
     obj.gainNode.connect(context.destination);
 
     // play sound
-    source.noteOn(0);
+    source.start(0);
     callback && callback();
   }
   // playSound(sound);
