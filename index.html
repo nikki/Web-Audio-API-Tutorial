@@ -38,6 +38,9 @@
 <pre><code class="language-javascript">var context;
 
 try {
+  // still needed for Safari
+  window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
   // create an AudioContext
   context = new AudioContext();
 } catch(e) {
@@ -126,7 +129,7 @@ function playSound(buffer) {
 <!-- Load multiple sounds -->
 <div>
 <h2><a id="ex-3">Load multiple sounds</a></h2>
-<pre data-line="21,27,49"><code class="language-javascript">var sounds = {
+<pre data-line="21,27,50"><code class="language-javascript">var sounds = {
   laser : {
     src : 'audio/laser'
   },
@@ -203,7 +206,7 @@ function loadSounds(obj) {
 <!-- Adjusting the volume -->
 <div>
 <h2><a id="ex-4">Adjusting the volume</a></h2>
-<pre data-line="25-35"><code class="language-javascript">sounds = {
+<pre data-line="26-36"><code class="language-javascript">sounds = {
   laser : {
     src : 'audio/laser',
     volume : 2
@@ -303,7 +306,7 @@ function muteSoundObj(obj) {
 <!-- Looping sounds -->
 <div>
 <h2><a id="ex-6">Looping sounds</a></h2>
-<pre data-line="29"><code class="language-javascript">sounds = {
+<pre data-line="30"><code class="language-javascript">sounds = {
   laser : {
     src : 'audio/laser',
     volume : 1,
@@ -377,7 +380,7 @@ function playSoundObj(obj) {
 <!-- Crossfading sounds -->
 <div>
 <h2><a id="ex-7">Crossfading sounds</a></h2>
-<pre><code class="language-javascript">var crossfade = {
+<pre data-line="22-31"><code class="language-javascript">var crossfade = {
   battle : {
     src : 'audio/the-last-encounter',
     volume : 1,

@@ -8,6 +8,9 @@
    */
 
   try {
+    // apparently still needed for Safari :/
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
     // create an AudioContext
     context = new AudioContext();
   } catch(e) {
@@ -126,12 +129,9 @@
     for (i in obj) {
       if (obj.hasOwnProperty(i)) {
         // load sound
-        loadSoundObj(obj[i]);
+        loadSoundObj(obj[i], callback);
       }
     }
-
-    // display success message
-    callback && callback();
   }
 
 
@@ -295,8 +295,6 @@
   /**
    * Demo Utilities
    */
-
-  // !!! TODO: wait until audio is _actually loaded_ before displaying messages
 
   function message(type, msg) {
     var $alert = $('.alert-' + (type === 'error' ? 'danger' : 'success') + ':last').clone().removeClass('hidden'), // clone alert
