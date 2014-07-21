@@ -170,7 +170,7 @@
     source.buffer = obj.buffer;
 
     // create a gain node
-    obj.gainNode = context.createGainNode();
+    obj.gainNode = context.createGain();
 
     // connect the source to the gain node
     source.connect(obj.gainNode);
@@ -235,7 +235,7 @@
     source.loop = obj.loop;
 
     // create a gain node
-    obj.gainNode = context.createGainNode();
+    obj.gainNode = context.createGain();
 
     // connect the source to the gain node
     source.connect(obj.gainNode);
