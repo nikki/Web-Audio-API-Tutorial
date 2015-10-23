@@ -1,1 +1,1 @@
-Code to accompany a tutorial on the Web Audio API.  The tutorial can be found here: http://kodogames.com/web-audio-api-tutorial/.  The demo is publicly viewable here: http://kodogames.com/demo/web-audio-api-tutorial/.
+Code to accompany a tutorial on the Web Audio API.  The tutorial can be found here: http://nicolahibbert.com/web-audio-api-tutorial/.  The demo is publicly viewable here: http://nicolahibbert.com/demo/web-audio-api-tutorial/.
